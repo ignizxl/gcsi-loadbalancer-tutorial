@@ -87,3 +87,16 @@ Utilize os comandos abaixo para criar os contêineres dos nodes que servirão os
   docker run -it -d -p 80 -v "${PWD}/build:/usr/share/nginx/html/" -v "${PWD}/nginx.conf:/etc/nginx/nginx.conf" --name node4 nginx:alpine
   docker run -it -d -p 80 -v "${PWD}/build:/usr/share/nginx/html/" -v "${PWD}/nginx.conf:/etc/nginx/nginx.conf" --name node5 nginx:alpine
 ```
+
+### 4. Configuração do Load Balancer
+
+Para configurar o balanceador de carga, execute o comando abaixo:
+```bash
+docker run -d -p 80:80 \
+  -v ./default.conf:/etc/nginx/conf.d/default.conf \
+  --name loadbalancer --hostname loadbalancer nginx:alpine
+```
+
+Esse contêiner será responsável por distribuir o tráfego entre os nodes definidos no arquivo `default.conf`.
+
+---
