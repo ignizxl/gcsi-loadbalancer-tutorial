@@ -76,3 +76,14 @@ server {
 ```
 Este arquivo de configuração define um servidor NGINX que atua como um **proxy reverso** para um grupo de servidores backend (chamados de nodes).
 O NGINX recebe requisições do cliente na porta 80 e as encaminha para os servidores definidos no bloco `upstream`, atuando como um intermediário para **balanceamento de carga e controle**.
+
+### 3. Subir os Contêineres com os Nodes
+
+Utilize os comandos abaixo para criar os contêineres dos nodes que servirão os arquivos estáticos:
+```bash
+  docker run -it -d -p 80 -v "${PWD}/build:/usr/share/nginx/html/" -v "${PWD}/nginx.conf:/etc/nginx/nginx.conf" --name node1 nginx:alpine
+  docker run -it -d -p 80 -v "${PWD}/build:/usr/share/nginx/html/" -v "${PWD}/nginx.conf:/etc/nginx/nginx.conf" --name node2 nginx:alpine
+  docker run -it -d -p 80 -v "${PWD}/build:/usr/share/nginx/html/" -v "${PWD}/nginx.conf:/etc/nginx/nginx.conf" --name node3 nginx:alpine
+  docker run -it -d -p 80 -v "${PWD}/build:/usr/share/nginx/html/" -v "${PWD}/nginx.conf:/etc/nginx/nginx.conf" --name node4 nginx:alpine
+  docker run -it -d -p 80 -v "${PWD}/build:/usr/share/nginx/html/" -v "${PWD}/nginx.conf:/etc/nginx/nginx.conf" --name node5 nginx:alpine
+```
