@@ -4,12 +4,22 @@
 
 Este guia descreve os passos para configurar um balanceador de carga (Load Balancer) para uma aplicação frontend utilizando NGINX em contêineres Docker.
 
+<p>
+  <a href="#passo1">Passo 1 – Compilar o Projeto Frontend</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+  <a href="#passo2">Passo 2 – Configuração do NGINX</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+  <a href="#passo3">Passo 3 – Subir os Contêineres com os Nodes</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+  <a href="#passo4">Passo 4 – Configuração do Load Balancer</a>&nbsp;&nbsp;&nbsp;| &nbsp;&nbsp;&nbsp;
+  <a href="#teste">Testando a Configuração</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</p>
+
 ## Pré-requisitos
 - Docker instalado
 - Projeto frontend configurado
 - NGINX configurado para atuar como servidor e balanceador de carga
 
 ## Passos
+
+<div id='passo1'></div>
 
 ### 1. Compilar o Projeto Frontend
 
@@ -20,6 +30,8 @@ npm i && npm run build
 ```
 
 > O resultado será uma pasta `build` contendo os arquivos estáticos da aplicação.
+
+<div id='passo2'></div>
 
 ### 2. Configuração do NGINX
 
@@ -77,6 +89,8 @@ server {
 Este arquivo de configuração define um servidor NGINX que atua como um **proxy reverso** para um grupo de servidores backend (chamados de nodes).
 O NGINX recebe requisições do cliente na porta 80 e as encaminha para os servidores definidos no bloco `upstream`, atuando como um intermediário para **balanceamento de carga e controle**.
 
+<div id='passo3'></div>
+
 ### 3. Subir os Contêineres com os Nodes
 
 Utilize os comandos abaixo para criar os contêineres dos nodes que servirão os arquivos estáticos:
@@ -87,6 +101,8 @@ Utilize os comandos abaixo para criar os contêineres dos nodes que servirão os
   docker run -it -d -p 80 -v "${PWD}/build:/usr/share/nginx/html/" -v "${PWD}/nginx.conf:/etc/nginx/nginx.conf" --name node4 nginx:alpine
   docker run -it -d -p 80 -v "${PWD}/build:/usr/share/nginx/html/" -v "${PWD}/nginx.conf:/etc/nginx/nginx.conf" --name node5 nginx:alpine
 ```
+
+<div id='passo4'></div>
 
 ### 4. Configuração do Load Balancer
 
@@ -100,3 +116,28 @@ docker run -d -p 80:80 \
 Esse contêiner será responsável por distribuir o tráfego entre os nodes definidos no arquivo `default.conf`.
 
 ---
+
+<div id='teste'></div>
+
+## Testando a Configuração
+
+Acesse o endereço `http://localhost` no navegador para verificar se o balanceador de carga está funcionando corretamente. O tráfego será distribuído automaticamente entre os nodes configurados.
+
+veja o exemplo abaixo:
+
+![localhost](assets/localhost.png)
+
+---
+
+## Observações
+- Certifique-se de que os endereços IP dos nodes (`172.17.0.X`) estejam corretos e acessíveis pelo contêiner do balanceador de carga.
+- Os logs de acesso podem ser verificados no arquivo `/var/log/nginx/nginx-access.log` dentro do contêiner do load balancer.
+
+### Referências utilizadas:
+- HTTP Load Balancing: https://docs.nginx.com/nginx/admin-guide/load-balancer/http-load-balancer/
+- Nginx: do básico ao Load Balancer: https://youtu.be/pPlcC5hDMCs?feature=shared
+
+## Aproveite este projeto!
+Criado por **João Igor dos Santos Barbosa**.
+
+[![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/ignizxl)
